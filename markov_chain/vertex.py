@@ -9,9 +9,11 @@ class MarkovVertex:
 
         self.__word = current_word
         self.__next_words = list(neighbours.keys())
-
         total = sum(neighbours.values())
         self.__probabilities = np.array([x / total for x in neighbours.values()])
+
+    def __str__(self):
+        return self.__word
 
     @property
     def word(self):
@@ -25,8 +27,5 @@ class MarkovVertex:
     def probabilities(self):
         return self.__probabilities
 
-    def __str__(self):
-        return self.__word
-    
     def get_next(self):
         return np.random.choice(self.__next_words, 1, p=self.__probabilities)[0]
