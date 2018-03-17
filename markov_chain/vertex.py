@@ -3,7 +3,7 @@ import numpy as np
 
 class MarkovVertex:
     """A vertex of a markov chain"""
-    def __init__(self, current_word='end', neighbours=None):
+    def __init__(self, current_word='', neighbours=None):
         if neighbours is None:
             neighbours = dict()
 
@@ -28,4 +28,6 @@ class MarkovVertex:
         return self.__probabilities
 
     def get_next(self):
+        if len(self.__next_words) == 0:
+            return None
         return np.random.choice(self.__next_words, 1, p=self.__probabilities)[0]
