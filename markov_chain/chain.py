@@ -32,17 +32,23 @@ class MarkovChain:
         self.__start_prob = [x / total for x in start_dict.values()]
         del start_dict
 
-    def get_start(self):
-        self.__cur_state = np.random.choice(self.__start_words, p=self.__start_prob)
-        return self.__cur_state
-
-    def get_next(self):
-        self.__cur_state = self.__namespace[self.__cur_state].get_next()
-        return self.__cur_state
-
     @property
     def cur_state(self):
         return self.__cur_state
 
-    def cur_vertex(self):
-        return self.__namespace[self.__cur_state]
+    def __get_start(self):
+        self.__cur_state = np.random.choice(self.__start_words, p=self.__start_prob)
+        return self.__cur_state
+
+    def __get_next(self):
+        self.__cur_state = self.__namespace[self.__cur_state].get_next()
+        return self.__cur_state
+
+    def examine(self, max_number=20):
+        text = self.__get_start() + ' '
+        len_counter = 0
+        while self.__get_next() is not None and len_counter < max_number:
+            len_counter += 1
+            text += self.cur_state + ' '
+
+        return text
