@@ -1,54 +1,68 @@
 from markov_chain.vertex import MarkovVertex
 import numpy as np
-from markov_chain.text_processing import process_array
+from markov_chain import text_processing
 
 
 class MarkovChain:
-    def __init__(self, text):
-        self.__namespace = dict()
-        self.__start_words = list()
-        self.__start_prob = list()
+    def __init__(self, file_path: str, lowercase=False):
+        self.__vertex_namespace = dict()
+        self.__file_path = file_path
+        # self.__start_words = list()
+        # self.__start_prob = list()
         self.__cur_state = None
-        self.__build_from_text(text)
+        self.__train_by_line(lowercase)
 
-    def __build_from_text(self, text):
-        word_dict = dict()
-        start_dict = dict()
-        for i in range(len(text)):
-            word = text[i]
-            if word not in word_dict:
-                word_dict[word] = dict()
-            if word != '.':
-                start_dict[word] = start_dict.get(word, 0) + 1
-                if i < len(text) - 1:
-                    word_dict[word][text[i + 1]] = word_dict[word].get(text[i + 1], 0) + 1
+    def __train_by_line(self, lowercase=False):
+        with open(self.__file_path, 'r') as file:
+            # last_word = ''
+            for line in file:
+                cleaned_line = text_processing.process_block(line)
 
-        for items in word_dict.items():
-            self.__namespace[items[0]] = MarkovVertex(items[0], items[1])
-        del word_dict
+                if lowercase:
+                    cleaned_line = [x.lower() for x in cleaned_line]
 
-        self.__start_words = list(start_dict.keys())
-        total = sum(start_dict.values())
-        self.__start_prob = [x / total for x in start_dict.values()]
-        del start_dict
+                # if len(cleaned_line) > 0:
+                #     if last_word != '':
+                #         cleaned_line = [last_word] + cleaned_line
+                #     last_word = cleaned_line[-1]
+
+                self.__add_line_to_chain(cleaned_line)
+
+            for vertex in self.__vertex_namespace.values():
+                vertex.lock()
+
+    def __add_line_to_chain(self, line):
+        for it in range(len(line)):
+            word = line[it]
+            if word not in self.__vertex_namespace:
+                self.__vertex_namespace[word] = MarkovVertex(word)
+
+            if it != len(line) - 1:
+                self.__vertex_namespace[word].add_word(line[it + 1])
 
     @property
     def cur_state(self):
         return self.__cur_state
 
     def __get_start(self):
-        self.__cur_state = np.random.choice(self.__start_words, p=self.__start_prob)
+        self.__cur_state = np.random.choice(list(self.__vertex_namespace.keys()))
         return self.__cur_state
 
     def __get_next(self):
-        self.__cur_state = self.__namespace[self.__cur_state].get_next()
+        self.__cur_state = self.__vertex_namespace[self.__cur_state].get_next()
         return self.__cur_state
 
     def examine(self, max_number=20):
-        text = self.__get_start() + ' '
+        self.__get_start()
+        text = str()
         len_counter = 0
-        while self.__get_next() is not None and len_counter < max_number:
+        while len_counter < max_number:
             len_counter += 1
-            text += self.cur_state + ' '
+            text += self.cur_state
+            if self.__get_next() is None:
+                text += '. '
+                self.__get_start()
+            else:
+                text += ' '
 
         return text

@@ -1,7 +1,6 @@
 .DS_Store
 .idea/
 __pycache__/
-tweets.npy
-tweets_.pickle
-positive.csv
-positive2.csv
+book.txt
+The Hobbit by J.R.R Tolkien_djvu.txt
+model.pickle
