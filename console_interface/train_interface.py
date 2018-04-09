@@ -1,7 +1,9 @@
+"""Argument parser for train.py"""
 import argparse
 
 
 def parse_args_for_train():
+    """Parses arguments for train.py"""
     parser = argparse.ArgumentParser(description='Parse arguments for train.py')
     parser.add_argument('--input-dir',
                         help='path to location with documents for training (default: stdin)')

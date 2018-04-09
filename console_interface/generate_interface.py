@@ -1,7 +1,9 @@
+"""Argument parser for generate.py"""
 import argparse
 
 
 def parse_args_for_generate():
+    """Parses arguments for generate.py"""
     parser = argparse.ArgumentParser(description='Parse arguments for generate.py')
     parser.add_argument('--model', default='model.pickle',
                         help='path where trained model is located (default: model.pickle)')

@@ -1,9 +1,14 @@
+"""Train the model"""
 from markov_chain.chain import MarkovChain
 from console_interface.train_interface import parse_args_for_train
 import pickle
 
 
 def train_and_dump(arguments):
+    """Train and dump the model
+    :param arguments: Namespace
+        Namespace with command arguments"""
+
     chain = MarkovChain(arguments.input_dir, lowercase=arguments.lc)
     with open(arguments.model, 'wb') as file:
         pickle.dump(chain, file)
