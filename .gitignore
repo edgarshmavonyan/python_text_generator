@@ -1,6 +1,5 @@
 .DS_Store
 .idea/
 __pycache__/
-book.txt
-The Hobbit by J.R.R Tolkien_djvu.txt
+books/
 model.pickle

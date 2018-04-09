@@ -3,8 +3,16 @@ from console_interface.train_interface import parse_args_for_train
 import pickle
 
 
-if __name__ == '__main__':
-    args = parse_args_for_train()
-    chain = MarkovChain(args.input_dir, lowercase=args.lc)
-    with open(args.model, 'wb') as file:
+def train_and_dump(arguments):
+    chain = MarkovChain(arguments.input_dir, lowercase=arguments.lc)
+    with open(arguments.model, 'wb') as file:
         pickle.dump(chain, file)
+
+
+def main():
+    args = parse_args_for_train()
+    train_and_dump(args)
+
+
+if __name__ == '__main__':
+    main()
