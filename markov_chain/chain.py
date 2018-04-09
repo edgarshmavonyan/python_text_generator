@@ -77,7 +77,7 @@ class MarkovChain:
 
     def __get_next(self):
         """Get next state of the chain"""
-        if self.__cur_state is not in self.__vertex_namespace:
+        if self.__cur_state not in self.__vertex_namespace:
             return None
 
         self.__cur_state = self.__vertex_namespace[self.__cur_state].get_next()
