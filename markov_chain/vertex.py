@@ -1,5 +1,6 @@
 """Implementation of vertex of markov chain"""
 import numpy as np
+from collections import defaultdict
 
 
 class MarkovVertex:
@@ -13,7 +14,7 @@ class MarkovVertex:
         self.__regime = False
         self.__next_words = list()
         self.__probabilities = list()
-        self.__next_words_dict = dict()
+        self.__next_words_dict = defaultdict(int)
 
     def __str__(self):
         """Convenient output"""
@@ -26,10 +27,8 @@ class MarkovVertex:
 
         if self.__regime:
             raise BaseException
-        if word in self.__next_words_dict:
-            self.__next_words_dict[word] += 1
-        else:
-            self.__next_words_dict[word] = 1
+
+        self.__next_words_dict[word] += 1
 
     def lock(self):
         """Lock vertex to calculate probabilities"""

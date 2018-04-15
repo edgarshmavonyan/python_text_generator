@@ -7,6 +7,9 @@ from os import path
 from os import listdir
 
 
+LINE_LENGTH = 100
+
+
 class MarkovChain:
     """Class representing markov chain"""
     def __init__(self, input_dir: str, lowercase=False):
@@ -94,16 +97,15 @@ class MarkovChain:
 
         self.__get_start(start_word)
         text = str()
-        len_counter = 0
-        while len_counter < length:
-            len_counter += 1
+
+        for len_counter in range(length):
             text += self.cur_state
             if self.__get_next() is None:
                 text += '. '
                 self.__get_start()
             else:
                 text += ' '
-            if len_counter % 100 == 0:
+            if len_counter % LINE_LENGTH == 0:
                 print(text, file=stream)
                 text = str()
 
