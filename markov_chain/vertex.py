@@ -17,7 +17,8 @@ class MarkovVertex:
         self.__next_words_dict = defaultdict(int)
 
     def __str__(self):
-        """Convenient output"""
+        """Convenient output
+        :return: current state in string"""
         return self.__word
 
     def add_word(self, word: str):
@@ -35,12 +36,16 @@ class MarkovVertex:
         self.__regime = True
         self.__next_words = list(self.__next_words_dict.keys())
         total = sum(self.__next_words_dict.values())
-        self.__probabilities = [x / total for x in self.__next_words_dict.values()]
+
+        self.__probabilities = \
+            [x / total for x in self.__next_words_dict.values()]
+
         del self.__next_words_dict
         del total
 
     def get_next(self):
-        """A method to get next state of chain randomly"""
+        """A method to get next state of chain randomly
+        :return: chosen randomly next state of a chain in string"""
         if len(self.__next_words) == 0:
             return None
         return np.random.choice(self.__next_words, p=self.__probabilities)

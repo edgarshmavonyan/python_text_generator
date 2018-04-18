@@ -7,9 +7,6 @@ from os import path
 from os import listdir
 
 
-LINE_LENGTH = 100
-
-
 class MarkovChain:
     """Class representing markov chain"""
     def __init__(self, input_dir: str, lowercase=False):
@@ -64,65 +61,74 @@ class MarkovChain:
 
     @property
     def cur_state(self):
-        """Cur state getter"""
+        """Cur state getter
+        :return: string with current state"""
         return self.__cur_state
 
     def __get_start(self, seed=None):
         """Start word getter
         :param seed: str
-            A word to start (chosen randomly, if None)"""
+            A word to start (chosen randomly, if None)
+        :return: string with start word"""
         if seed is None:
-            self.__cur_state = np.random.choice(list(self.__vertex_namespace.keys()))
+            self.__cur_state = \
+                np.random.choice(list(self.__vertex_namespace.keys()))
+
             return self.__cur_state
         else:
             self.__cur_state = seed
             return seed
 
     def __get_next(self):
-        """Get next state of the chain"""
+        """Get next state of the chain:
+        :return: next state in string"""
         if self.__cur_state not in self.__vertex_namespace:
             return None
 
         self.__cur_state = self.__vertex_namespace[self.__cur_state].get_next()
         return self.__cur_state
 
-    def generate(self, stream, start_word, length):
+    def generate(self, stream, start_word, line_length, length):
         """Generate text and print into the stream
         :param stream
-            An output stream
+            An output stream (stdout, if None)
         :param start_word
-            The word to start
+            The word to start (randomly, if None)
+        :param line_length
+            Length of a generated line (default: 100)
         :param length: int
-            A number of words in generated text"""
+            A number of words in generated text (default: 20)"""
 
         self.__get_start(start_word)
         text = str()
 
-        for len_counter in range(length):
+        for len_counter in range(1, length + 1):
             text += self.cur_state
             if self.__get_next() is None:
                 text += '. '
                 self.__get_start()
             else:
                 text += ' '
-            if len_counter % LINE_LENGTH == 0:
+            if len_counter % line_length == 0 and len_counter != length:
                 print(text, file=stream)
                 text = str()
 
         if text != '':
-            print(text, file=stream)
+            print(text + '.', file=stream)
 
-    def examine(self, output_file, start_word, length=20):
+    def examine(self, output_file, start_word, line_length, length):
         """Generate method runner
         :param output_file
             The file where we write (stdout, if None)
         :param start_word: str
             The word, the text we start from (chosen randomly, if None)
+        :param line_length: int
+            The length of a generated line (default: 100)
         :param length: int
             The length of generated text (default: 20)"""
 
         if output_file is None:
-            self.generate(sys.stdout, start_word, length)
+            self.generate(sys.stdout, start_word, line_length, length)
         else:
             with open(output_file, 'w') as stream:
-                self.generate(stream, start_word, length)
+                self.generate(stream, start_word, line_length, length)

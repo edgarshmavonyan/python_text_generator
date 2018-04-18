@@ -10,7 +10,7 @@ def generate_text(args):
 
     with open(args.model, "rb") as model:
         chain = pickle.load(model)
-    chain.examine(args.output, args.seed, args.length)
+    chain.examine(args.output, args.seed, args.line_length, args.length)
 
 
 def main():
